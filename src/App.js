@@ -13,7 +13,7 @@ function App() {
     const [lista, setLista] = useState([]); //Imutabilidade
 
     useEffect(()=>{
-        api.get('/tarefas').then((response) =>{
+        api.get('/alimentacao').then((response) =>{
             const itens = response.data;
             setLista(itens);
         })
@@ -24,10 +24,9 @@ function App() {
         {lista.map(item => (
         <tr key={item.id}>
             <td>{item.id}</td>
-            <td>{item.name}</td>
-            <td>
-                <input type="checkbox" checked={item.done}/>
-            </td>
+            <td>{item.nome}</td>
+            <td>{item.quantidade}</td>
+            <td>{item.gramas}</td>
         </tr>
     ))}
     </table>
