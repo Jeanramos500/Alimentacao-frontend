@@ -24,6 +24,8 @@ function App() {
     const [lista, setLista] = useState([]); //Imutabilidade
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
+    const [alimentacao, setAlimentacao]= useState('');
+    const [ nome, setNome ] = useState('');
  
     //executa para obeter informações externas.
     useEffect(()=>{
@@ -42,6 +44,13 @@ function App() {
         setOpen(false);
     }
     
+    function addAlimentacao(){
+        const nome =nome;
+        api.post('/alimentacao', {nome:nome}).then((response) =>{
+        setAlimentacao('');
+        setOpen(false);
+        })
+    }
     return (
     <div style={{marginTop: '80px'}}>
 { loading ? <CircularProgress/> : <div/> }
@@ -73,13 +82,15 @@ function App() {
                 label="Alimento"
                 type="email"
                 fullWidth
+                value={alimentacao}
+                onChange={e=> setAlimentacao(e.target.value)}
             />
             </DialogContent>
             <DialogActions>
             <Button onClick={closeModal} color="primary">
                 Cancelar
             </Button>
-            <Button onClick={closeModal} color="primary">
+            <Button onClick={addAlimentacao} color="primary">
                 Salvar
             </Button>
             </DialogActions>
