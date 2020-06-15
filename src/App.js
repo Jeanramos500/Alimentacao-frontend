@@ -117,14 +117,14 @@ function App() {
                             variant="outlined" 
                             size="small" 
                             color="secondary">Apagar</Button>
+                        <Button style={{marginLeft: '30px'}}
+                            color="primary"
+                            variant="outlined" 
+                            onClick={() => openEditar(item.id,item.nome,item.quantidade,item.gramas)}
+                            size="small"> 
+                            Editar 
+                        </Button>
                     </TableCell>
-                     <Button style={{marginLeft: '30px'}}
-                        color="primary"
-                        variant="outlined" 
-                        onClick={() => openEditar(item.id,item.nome,item.quantidade,item.gramas)}
-                        size="small"> 
-                         Editar 
-                    </Button>
                 </TableRow>
                  ))}
              </TableBody>
