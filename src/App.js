@@ -19,6 +19,7 @@ import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 
 
+
 function App() {
 
     const [lista, setLista] = useState([]); //Imutabilidade
@@ -29,12 +30,16 @@ function App() {
  
     //executa para obeter informações externas.
     useEffect(()=>{
-        api.get('/alimentacao').then((response) =>{
+            loadData();
+            setLoading(false);
+    },[])
+
+    function loadData(){
+    api.get('/alimentacao').then((response) =>{
             const itens = response.data;
             setLista(itens);
-            setLoading(false);
-        })
-    },[])
+        });
+    }
 
     function openModal(){
         setOpen(true);
@@ -45,12 +50,23 @@ function App() {
     }
     
     function addAlimentacao(){
-        const nome =nome;
-        api.post('/alimentacao', {nome:nome}).then((response) =>{
+        const name =nome;
+        api.post('/alimentacao', {nome:name}).then((response) =>{
         setAlimentacao('');
         setOpen(false);
-        })
+        
+        loadData();
+    })
     }
+
+    //Apagar 
+    function deleteAlimento(id){
+    api.delete(`/alimentacao/${id}`).then((response)=>{
+        loadData();
+    })
+    }
+
+
     return (
     <div style={{marginTop: '80px'}}>
 { loading ? <CircularProgress/> : <div/> }
@@ -62,6 +78,9 @@ function App() {
                     <TableCell>{item.nome}</TableCell>
                     <TableCell>{item.quantidade}</TableCell>
                     <TableCell>{item.gramas}</TableCell>
+                    <TableCell>
+                        <Button variant="outlined" size="small"  onClick={() => deleteAlimento(item.id)}>Apagar</Button>
+                    </TableCell>
                 </TableRow>
                  ))}
              </TableBody>
@@ -78,9 +97,19 @@ function App() {
             <TextField
                 autoFocus
                 margin="dense"
-                id="name"
+                id="nome"
                 label="Alimento"
                 type="email"
+                fullWidth
+                value={alimentacao}
+                onChange={e=> setAlimentacao(e.target.value)}
+            />
+               <TextField
+                autoFocus
+                margin="dense"
+                id="quantidade"
+                label="Quantidade"
+                type="number"
                 fullWidth
                 value={alimentacao}
                 onChange={e=> setAlimentacao(e.target.value)}
