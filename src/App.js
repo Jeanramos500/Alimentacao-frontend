@@ -20,14 +20,19 @@ import TextField from '@material-ui/core/TextField';
 
 
 
+
 function App() {
 
     const [lista, setLista] = useState([]); //Imutabilidade
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [alimentacao, setAlimentacao]= useState('');
-    const [ nome, setNome ] = useState('');
- 
+    const [nome, setNome ] = useState('');
+    const [quantidade, setQuantidade ] = useState('');
+    const [gramas, setGramas] = useState('');
+    const [botaoEditar, setBotaoEditar ] = useState(false);
+    const [botaoAdicionar, setBotaoAdicionar ] = useState(false);
+    
     //executa para obeter informações externas.
     useEffect(()=>{
             loadData();
@@ -50,8 +55,10 @@ function App() {
     }
     
     function addAlimentacao(){
-        const name =nome;
-        api.post('/alimentacao', {nome:name}).then((response) =>{
+        const name =nome
+        const quantity = quantidade;
+        const grams=gramas;
+        api.post('/alimentacao', {nome:name,quantidade:quantity,gramas:grams}).then((response) =>{
         setAlimentacao('');
         setOpen(false);
         
@@ -59,6 +66,23 @@ function App() {
     })
     }
 
+    function openEditar(id,nome,quantidade,gramas){
+        setBotaoAdicionar(false);
+        setBotaoEditar(true);
+        setOpen(true);
+        setNome(nome);
+        setQuantidade(quantidade);
+        setGramas(gramas);
+    }
+    function editarAlimento(id,nome,quantidade,gramas){
+        api.put(`/alimentacao/${id}`,{nome:nome,quantidade:quantidade,gramas:gramas}).then((response) => {
+            setOpen(false);
+            setNome('');
+            setQuantidade('');
+            setGramas('');
+            loadData();
+        });
+    }
     //Apagar 
     function deleteAlimento(id){
     api.delete(`/alimentacao/${id}`).then((response)=>{
@@ -69,8 +93,17 @@ function App() {
 
     return (
     <div style={{marginTop: '80px'}}>
-{ loading ? <CircularProgress/> : <div/> }
+        {loading ? <CircularProgress/> : <div/> }
         <Table>
+            <TableHead>
+                  <TableRow>
+                        <TableCell>Código</TableCell>
+                        <TableCell>Nome</TableCell>
+                        <TableCell>Quantidade</TableCell>
+                        <TableCell>Gramas</TableCell>
+                        <TableCell>Ações</TableCell>
+                    </TableRow>
+            </TableHead>
             <TableBody>
                 {lista.map(item => (
                 <TableRow key={item.id}>
@@ -79,13 +112,24 @@ function App() {
                     <TableCell>{item.quantidade}</TableCell>
                     <TableCell>{item.gramas}</TableCell>
                     <TableCell>
-                        <Button variant="outlined" size="small"  onClick={() => deleteAlimento(item.id)}>Apagar</Button>
+                        <Button 
+                            onClick={() => deleteAlimento(item.id)}
+                            variant="outlined" 
+                            size="small" 
+                            color="secondary">Apagar</Button>
                     </TableCell>
+                     <Button style={{marginLeft: '30px'}}
+                        color="primary"
+                        variant="outlined" 
+                        onClick={() => openEditar(item.id,item.nome,item.quantidade,item.gramas)}
+                        size="small"> 
+                         Editar 
+                    </Button>
                 </TableRow>
                  ))}
              </TableBody>
         </Table>
-        <Button onClick={openModal} variant="contained" color="primary">
+        <Button style={{marginTop: '30px'}} onClick={openModal} variant="contained" color="primary">
             Adicionar
         </Button>
         <Dialog open={open} onClose={closeModal}>
@@ -99,10 +143,10 @@ function App() {
                 margin="dense"
                 id="nome"
                 label="Alimento"
-                type="email"
+                type="text"
                 fullWidth
-                value={alimentacao}
-                onChange={e=> setAlimentacao(e.target.value)}
+                value={nome}
+                onChange={e=> setNome(e.target.value)}
             />
                <TextField
                 autoFocus
@@ -111,15 +155,25 @@ function App() {
                 label="Quantidade"
                 type="number"
                 fullWidth
-                value={alimentacao}
-                onChange={e=> setAlimentacao(e.target.value)}
+                value={quantidade}
+                onChange={e=> setQuantidade(e.target.value)}
+            />
+            <TextField
+                autoFocus
+                margin="dense"
+                id="gramas"
+                label="Gramas"
+                type="float"
+                fullWidth
+                value={gramas}
+                onChange={e=> setGramas(e.target.value)}
             />
             </DialogContent>
             <DialogActions>
             <Button onClick={closeModal} color="primary">
                 Cancelar
             </Button>
-            <Button onClick={addAlimentacao} color="primary">
+            <Button onClick={botaoEditar ? editarAlimento : addAlimentacao } color="primary">
                 Salvar
             </Button>
             </DialogActions>
