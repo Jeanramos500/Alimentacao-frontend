@@ -31,6 +31,7 @@ function App() {
     const [gramas, setGramas] = useState('');
     const [botaoEditar, setBotaoEditar ] = useState(false);
     const [botaoAdicionar, setBotaoAdicionar ] = useState(false);
+     const [idAlimento, setIdAlimento ] = useState('');
     
     //executa para obeter informações externas.
     useEffect(()=>{
@@ -47,6 +48,12 @@ function App() {
 
     function openModal(){
         setOpen(true);
+        setBotaoAdicionar(true);
+        setBotaoEditar(false);
+        setNome('');
+        setQuantidade('');
+        setIdAlimento('');
+        setGramas('');
     }
 
       function closeModal(){
@@ -72,13 +79,15 @@ function App() {
         setNome(nome);
         setQuantidade(quantidade);
         setGramas(gramas);
+        setIdAlimento(id);
     }
-    function editarAlimento(id,nome,quantidade,gramas){
-        api.put(`/alimentacao/${id}`,{nome:nome,quantidade:quantidade,gramas:gramas}).then((response) => {
+    function editarAlimento(){
+        api.put(`/alimentacao/${idAlimento}`,{nome:nome,quantidade:quantidade,gramas:gramas}).then((response) => {
             setOpen(false);
             setNome('');
             setQuantidade('');
             setGramas('');
+            setIdAlimento('');
             loadData();
         });
     }
