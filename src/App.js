@@ -47,13 +47,13 @@ function App() {
     }
 
     function openModal(){
-        setOpen(true);
-        setBotaoAdicionar(true);
-        setBotaoEditar(false);
         setNome('');
         setQuantidade('');
         setIdAlimento('');
         setGramas('');
+        setOpen(true);
+        setBotaoAdicionar(true);
+        setBotaoEditar(false);
     }
 
       function closeModal(){
@@ -157,7 +157,6 @@ function App() {
                 onChange={e=> setNome(e.target.value)}
             />
                <TextField
-                autoFocus
                 margin="dense"
                 id="quantidade"
                 label="Quantidade"
@@ -167,7 +166,6 @@ function App() {
                 onChange={e=> setQuantidade(e.target.value)}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 id="gramas"
                 label="Gramas"
